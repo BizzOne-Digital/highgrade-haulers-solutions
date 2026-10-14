@@ -10,13 +10,14 @@ import {
   HardHat,
   Home,
   KeyRound,
+  MapPin,
   Wallet,
 } from "lucide-react";
 import Link from "next/link";
 import QuickBookingForm from "@/components/forms/QuickBookingForm";
 import SafeImage from "@/components/SafeImage";
 import SplitHero, { HeroEyebrow } from "@/components/site/SplitHero";
-import { getGallery, getPage, getPricing, getServices } from "@/lib/content";
+import { getGallery, getPage, getPricing, getServices, getSettings } from "@/lib/content";
 import { pageMetadata } from "@/lib/seo";
 
 export const revalidate = 300;
@@ -25,7 +26,7 @@ export const generateMetadata = () => pageMetadata("home", "/");
 const money = (n: number) => `$${n.toLocaleString("en-US")}`;
 
 export default async function HomePage() {
-  const [{ fields: c }, pricing, services, gallery] = await Promise.all([getPage("home"), getPricing(), getServices(), getGallery()]);
+  const [{ fields: c }, pricing, services, gallery, settings] = await Promise.all([getPage("home"), getPricing(), getServices(), getGallery(), getSettings()]);
 
   const cards = [1, 2, 3].map((n) => ({
     title: c[`card${n}Title`],
@@ -89,6 +90,11 @@ export default async function HomePage() {
           </Link>
         </div>
         <p className="mt-5 animate-rise text-sm text-white/75 [animation-delay:460ms]">{c.heroNote}</p>
+        {settings.serviceArea && (
+          <p className="mt-3 inline-flex animate-rise items-center gap-2 border-l-4 border-hazard bg-white/5 py-2 pl-3 pr-4 text-sm font-bold text-white [animation-delay:520ms] sm:text-base">
+            <MapPin className="size-4 shrink-0 text-hazard" aria-hidden /> {settings.serviceArea}
+          </p>
+        )}
       </SplitHero>
 
       {/* 4. Benefits strip */}

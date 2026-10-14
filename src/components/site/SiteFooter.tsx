@@ -1,4 +1,4 @@
-import { Mail, Phone } from "lucide-react";
+import { Mail, MapPin, Phone } from "lucide-react";
 import Link from "next/link";
 import Wordmark from "@/components/site/Wordmark";
 import FooterNav from "@/components/site/FooterNav";
@@ -23,7 +23,11 @@ export default function SiteFooter({ settings }: { settings: SiteSettingsData })
           <Link href="/" aria-label={`${settings.businessName} home`} className="inline-block">
             <Wordmark logoUrl={settings.logoUrl} businessName={settings.businessName} size="lg" />
           </Link>
-          {settings.serviceArea && <p className="mt-4 max-w-xs text-sm text-white/70">{settings.serviceArea}</p>}
+          {settings.serviceArea && (
+            <p className="mt-4 flex max-w-xs items-start gap-2 text-sm font-semibold text-white/85">
+              <MapPin className="mt-0.5 size-4 shrink-0 text-hazard" aria-hidden /> {settings.serviceArea}
+            </p>
+          )}
         </div>
 
         <ul className="space-y-3 text-[0.95rem] text-white/85">

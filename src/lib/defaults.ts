@@ -11,7 +11,7 @@ export const DEFAULT_SETTINGS = {
   phoneHref: "tel:+13126102757",
   email: "hghaulers@yahoo.com",
   facebookUrl: "",
-  serviceArea: "",
+  serviceArea: "Serving Chicago and the surrounding suburbs.",
   logoUrl: "",
   announcement: "Residential & Commercial Junk Removal",
 };
