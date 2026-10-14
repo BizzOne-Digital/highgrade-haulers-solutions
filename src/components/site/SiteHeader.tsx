@@ -70,7 +70,7 @@ export default function SiteHeader({ businessName, phone, phoneHref, logoUrl, an
 
       {/* Main header */}
       <header className="sticky top-0 z-50 border-b border-white/10 bg-ink text-white">
-        <div className="mx-auto flex h-[4.5rem] max-w-7xl items-center justify-between gap-6 px-4 sm:h-[5.25rem] sm:px-6 lg:px-12">
+        <div className="mx-auto flex h-[5.25rem] max-w-7xl items-center justify-between gap-6 px-4 sm:h-[6.25rem] sm:px-6 lg:px-12">
           <Link href="/" className="shrink-0" aria-label={`${businessName} home`}>
             <Wordmark logoUrl={logoUrl} businessName={businessName} priority />
           </Link>
@@ -127,7 +127,7 @@ export default function SiteHeader({ businessName, phone, phoneHref, logoUrl, an
         <div
           id="mobile-nav"
           hidden={!open}
-          className="absolute inset-x-0 top-full h-[calc(100dvh-4.5rem)] overflow-y-auto border-t border-white/10 bg-ink sm:h-[calc(100dvh-5.25rem)] lg:hidden"
+          className="absolute inset-x-0 top-full h-[calc(100dvh-5.25rem)] overflow-y-auto border-t border-white/10 bg-ink sm:h-[calc(100dvh-6.25rem)] lg:hidden"
         >
           <nav aria-label="Mobile" className="px-4 py-6 sm:px-6">
             <ul className="divide-y divide-white/10 border-y border-white/10">

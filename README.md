@@ -129,3 +129,18 @@ Checks performed during development (local, MongoDB 8 in-memory server):
 ## Bundled website images
 
 The public page heroes and service illustrations use 14 optimized WebP assets in public/images/highgrade. These were created with the built-in image generation tool and are illustrative imagery, not actual company job photographs. Their full prompts are recorded in scripts/image-generation-prompts.json. Original seeded Unsplash URLs are resolved to these bundled images in public and admin content readers, including dedicated page heroes, without changing unrelated saved content. Custom images and MongoDB admin uploads continue to use their own URLs. No database reseed is required.
+
+## 9. Booking and quote email alerts (optional)
+
+Every booking request and contact/quote request is always saved to MongoDB and listed in **Admin → Bookings / Contact Leads**. Email alerts are an optional extra:
+
+1. Create a free account at [resend.com](https://resend.com) and verify the sending domain (once the client's domain is connected).
+2. Set these environment variables in Vercel and redeploy:
+   - `RESEND_API_KEY`: the Resend API key.
+   - `NOTIFY_EMAIL_FROM`: a sender on the verified domain, e.g. `Highgrade Website <bookings@yourdomain.com>`.
+   - `NOTIFY_EMAIL_TO` (optional): comma-separated recipients. Defaults to the email in **Admin → Settings** (`hghaulers@yahoo.com`).
+3. The admin dashboard shows whether email alerts are on or off.
+
+Emails are sent after the submission is saved; if the email service fails, the booking is still saved and the error is logged. The email's Reply-To is the customer's address, so the client can reply directly.
+
+**Phone alerts:** installing the Yahoo Mail app (or whichever app receives the alert emails) with notifications enabled gives an instant phone alert for every new request at no extra cost. SMS alerts (for example via Twilio) can be added later; they need a paid SMS account and are not built in.

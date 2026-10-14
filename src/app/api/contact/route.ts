@@ -1,6 +1,7 @@
-import { NextResponse } from "next/server";
+import { after, NextResponse } from "next/server";
 import { connectDB } from "@/lib/db";
 import { ContactLead } from "@/lib/models";
+import { notifyNewLead } from "@/lib/notify";
 import { guardPublicForm } from "@/lib/public-form";
 import { jsonError } from "@/lib/security";
 import { contactSchema, fieldIssues } from "@/lib/validation";
@@ -19,6 +20,7 @@ export async function POST(req: Request) {
   try {
     await connectDB();
     await ContactLead.create({ ...parsed.data, status: "New" });
+    after(() => notifyNewLead(parsed.data));
     return NextResponse.json({ success: true }, { status: 201 });
   } catch (err) {
     console.error("[contact] save failed:", (err as Error).message);

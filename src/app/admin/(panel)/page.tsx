@@ -1,12 +1,14 @@
-import { ArrowRight, CalendarClock, Images, MessageSquare, Wrench } from "lucide-react";
+import { ArrowRight, CalendarClock, Images, MailCheck, MessageSquare, Wrench } from "lucide-react";
 import Link from "next/link";
 import { AdminHeader, Card, StatusBadge } from "@/components/admin/AdminUI";
 import { dashboardCounts } from "@/lib/admin-data";
+import { notificationsEnabled } from "@/lib/notify";
 
 const fmt = (iso: string) => new Date(iso).toLocaleString("en-US", { dateStyle: "medium", timeStyle: "short" });
 
 export default async function AdminDashboard() {
   const d = await dashboardCounts();
+  const emailOn = notificationsEnabled();
   const stats = [
     { label: "New booking requests", value: d.bookingsNew, sub: `${d.bookingsTotal} total • ${d.bookingsWeek} this week`, href: "/admin/bookings?status=New", icon: CalendarClock, alert: d.bookingsNew > 0 },
     { label: "New contact leads", value: d.leadsNew, sub: `${d.leadsTotal} total`, href: "/admin/leads?status=New", icon: MessageSquare, alert: d.leadsNew > 0 },
@@ -17,6 +19,12 @@ export default async function AdminDashboard() {
   return (
     <>
       <AdminHeader title="Dashboard" description="Live counts from the database. New requests need a call back." />
+      <p className={`mb-6 flex items-start gap-2 rounded-[4px] border px-4 py-3 text-sm font-semibold ${emailOn ? "border-brand bg-white" : "border-hazard bg-hazard/25"}`}>
+        <MailCheck className="mt-0.5 size-4 shrink-0" aria-hidden />
+        {emailOn
+          ? "Email alerts are on: every new booking request and quote request is emailed to the business inbox."
+          : "Email alerts are off. New requests are saved here; check this dashboard regularly or ask your developer to connect email alerts."}
+      </p>
       <ul className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {stats.map((s) => (
           <li key={s.label}>
