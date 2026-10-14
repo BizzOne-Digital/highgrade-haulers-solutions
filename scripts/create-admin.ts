@@ -25,7 +25,13 @@ async function main() {
 
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) throw new Error("Set ADMIN_EMAIL (or --email) to a valid email address.");
   const strong = password.length >= 12 && /[a-z]/.test(password) && /[A-Z]/.test(password) && /\d/.test(password);
-  if (!strong) throw new Error("ADMIN_PASSWORD must be at least 12 characters with upper-case, lower-case, and a number.");
+  if (!strong && !process.argv.includes("--allow-weak")) {
+    throw new Error("ADMIN_PASSWORD must be at least 12 characters with upper-case, lower-case, and a number.");
+  }
+  if (!strong) {
+    if (password.length < 8) throw new Error("ADMIN_PASSWORD must be at least 8 characters, even with --allow-weak.");
+    console.warn("Warning: weak password accepted because --allow-weak was passed. Change it as soon as possible.");
+  }
 
   const { connectDB } = await import("../src/lib/db");
   const { AdminUser, AdminSession } = await import("../src/lib/models");

@@ -1,8 +1,8 @@
-import { resolveBundledImage, resolveBundledPageFields } from "@/lib/bundled-images";
+import { resolveBundledImage } from "@/lib/bundled-images";
 import "server-only";
 import { connectDB } from "@/lib/db";
-import { Booking, BOOKING_STATUSES, ContactLead, LEAD_STATUSES, GalleryItem, PageContent, PricingSettings, Service, SiteSettings, StoredUpload, type PageSlug } from "@/lib/models";
-import { DEFAULT_PRICING, DEFAULT_SEO, DEFAULT_SERVICES, DEFAULT_SETTINGS, defaultFields } from "@/lib/defaults";
+import { Booking, BOOKING_STATUSES, ContactLead, LEAD_STATUSES, GalleryItem, PricingSettings, Service, SiteSettings, StoredUpload } from "@/lib/models";
+import { DEFAULT_PRICING, DEFAULT_SERVICES, DEFAULT_SETTINGS } from "@/lib/defaults";
 
 /** Admin loaders read straight from MongoDB (no cache) and return plain serialisable objects. */
 
@@ -43,27 +43,6 @@ export async function loadSettings() {
   const out = { ...DEFAULT_SETTINGS };
   if (doc) for (const k of Object.keys(out) as (keyof typeof out)[]) if (typeof doc[k] === "string") out[k] = doc[k] as string;
   return out;
-}
-
-export async function loadPages() {
-  await connectDB();
-  const docs = await PageContent.find().lean();
-  const slugs: PageSlug[] = ["home", "services", "pricing", "booking", "contact"];
-  return Object.fromEntries(
-    slugs.map((slug) => {
-      const d = docs.find((x) => x.slug === slug);
-      const saved = d?.fields ? (d.fields instanceof Map ? Object.fromEntries(d.fields) : (d.fields as Record<string, string>)) : {};
-      return [
-        slug,
-        {
-          seoTitle: d?.seoTitle || DEFAULT_SEO[slug].seoTitle,
-          seoDescription: d?.seoDescription || DEFAULT_SEO[slug].seoDescription,
-          ogImage: resolveBundledImage(d?.ogImage ?? ""),
-          fields: resolveBundledPageFields({ ...defaultFields(slug), ...saved }, defaultFields(slug)),
-        },
-      ];
-    }),
-  ) as Record<PageSlug, { seoTitle: string; seoDescription: string; ogImage: string; fields: Record<string, string> }>;
 }
 
 export async function loadServices() {

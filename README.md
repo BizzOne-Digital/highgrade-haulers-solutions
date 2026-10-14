@@ -3,7 +3,7 @@
 Next.js 16 (App Router, TypeScript) · Tailwind CSS 4 · MongoDB + Mongoose · Lucide icons.
 
 - **Public site:** `/`, `/services`, `/pricing`, `/booking`, `/contact` (separate routes and page components).
-- **Admin panel:** `/admin/login`, `/admin`, `/admin/pages`, `/admin/services`, `/admin/pricing`, `/admin/bookings`, `/admin/leads`, `/admin/gallery`, `/admin/settings`.
+- **Admin panel:** `/admin/login`, `/admin`, `/admin/services`, `/admin/pricing`, `/admin/bookings`, `/admin/leads`, `/admin/gallery`, `/admin/settings`.
 - All content, settings, submissions, and uploaded images live in MongoDB. Nothing is written to disk, so the app runs on read-only serverless filesystems and uploads survive redeployments.
 
 ---
@@ -122,7 +122,7 @@ Checks performed during development (local, MongoDB 8 in-memory server):
 
 ## 8. Content notes
 
-- Initial photos are real Unsplash images (served from `images.unsplash.com`) chosen to match each service. They are stock photos and do not show the client's own equipment. Replace them with real job photos from **Admin → Page Content** and **Admin → Services**.
+- Initial photos are real Unsplash images (served from `images.unsplash.com`) chosen to match each service. They are stock photos and do not show the client's own equipment. Replace them with real job photos from **Admin → Services** (page images are part of the site build).
 - Not included on purpose: business address, service area, reviews or ratings, licenses or insurance claims, overage rates, and online payments. Add a service area or Facebook URL in **Admin → Settings** when available; both stay hidden until filled in.
 
 
