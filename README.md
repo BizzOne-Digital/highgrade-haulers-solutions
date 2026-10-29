@@ -138,7 +138,7 @@ Every booking request and contact/quote request is always saved to MongoDB and l
 2. Set these environment variables in Vercel and redeploy:
    - `RESEND_API_KEY`: the Resend API key.
    - `NOTIFY_EMAIL_FROM`: a sender on the verified domain, e.g. `Highgrade Website <bookings@yourdomain.com>`.
-   - `NOTIFY_EMAIL_TO` (optional): comma-separated recipients. Defaults to the email in **Admin → Settings** (`hghaulers@yahoo.com`).
+   - `NOTIFY_EMAIL_TO` (optional): comma-separated recipients. Defaults to the email in **Admin → Settings** (`highgradecomplete@gmail.com`).
 3. The admin dashboard shows whether email alerts are on or off.
 
 Emails are sent after the submission is saved; if the email service fails, the booking is still saved and the error is logged. The email's Reply-To is the customer's address, so the client can reply directly.

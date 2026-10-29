@@ -9,7 +9,7 @@ export const DEFAULT_SETTINGS = {
   ownerName: "Darius Williams",
   phone: "(312) 610-2757",
   phoneHref: "tel:+13126102757",
-  email: "hghaulers@yahoo.com",
+  email: "highgradecomplete@gmail.com",
   facebookUrl: "",
   serviceArea: "Serving Chicago and the surrounding suburbs.",
   logoUrl: "",
