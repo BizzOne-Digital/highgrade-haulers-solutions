@@ -2,17 +2,37 @@ import "server-only";
 import { getSettings } from "@/lib/content";
 import { siteUrl } from "@/lib/site-url";
 
+import nodemailer from "nodemailer";
+
 /**
- * Optional email alerts for new bookings and contact leads, sent through Resend's HTTP API.
- * Disabled unless RESEND_API_KEY and NOTIFY_EMAIL_FROM are set. Failures are logged and never
- * affect the saved submission; the public site never claims an email was sent.
+ * Optional email alerts for new bookings and contact leads.
+ * - Gmail SMTP when SMTP_USER + SMTP_PASS (a Google App Password) are set, or
+ * - Resend's HTTP API when RESEND_API_KEY + NOTIFY_EMAIL_FROM are set.
+ * Failures are logged and never affect the saved submission; the public site never claims an email was sent.
  */
 
 const esc = (s: string) =>
   s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!);
 
+const smtpConfigured = () => Boolean(process.env.SMTP_USER && process.env.SMTP_PASS);
+const resendConfigured = () => Boolean(process.env.RESEND_API_KEY && process.env.NOTIFY_EMAIL_FROM);
+
 export function notificationsEnabled() {
-  return Boolean(process.env.RESEND_API_KEY && process.env.NOTIFY_EMAIL_FROM);
+  return smtpConfigured() || resendConfigured();
+}
+
+let transport: nodemailer.Transporter | null = null;
+function smtp() {
+  transport ??= nodemailer.createTransport({
+    host: process.env.SMTP_HOST || "smtp.gmail.com",
+    port: Number(process.env.SMTP_PORT || 465),
+    secure: Number(process.env.SMTP_PORT || 465) === 465,
+    // Google shows App Passwords with spaces; they are not part of the password.
+    auth: { user: process.env.SMTP_USER, pass: (process.env.SMTP_PASS ?? "").replace(/\s+/g, "") },
+    connectionTimeout: 8000,
+    socketTimeout: 10000,
+  });
+  return transport;
 }
 
 async function recipients(): Promise<string[]> {
@@ -42,6 +62,16 @@ async function send(subject: string, rows: [string, string][], adminPath: string
       <p style="margin-top:16px"><a href="${esc(siteUrl() + adminPath)}" style="background:#65cf37;color:#111512;padding:10px 16px;text-decoration:none;font-weight:bold">Open in admin</a></p>
     </div>`;
   const text = visible.map(([k, v]) => `${k}: ${v}`).join("\n") + `\n\nOpen in admin: ${siteUrl()}${adminPath}`;
+
+  if (smtpConfigured()) {
+    try {
+      const from = process.env.NOTIFY_EMAIL_FROM || `"Highgrade Website" <${process.env.SMTP_USER}>`;
+      await smtp().sendMail({ from, to, subject, html, text, replyTo: replyTo || undefined });
+    } catch (err) {
+      console.error("[notify] smtp error:", (err as Error).message);
+    }
+    return;
+  }
 
   try {
     const res = await fetch("https://api.resend.com/emails", {
